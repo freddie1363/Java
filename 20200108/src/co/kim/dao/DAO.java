@@ -8,8 +8,9 @@ import java.sql.SQLException;
 
 import co.kim.dto.JobDto;
 
-public class EmployeeDao {
-	private Connection conn;
+public class DAO {
+	public Connection conn;
+	
 //	private PreparedStatement psmt;
 //	private ResultSet rs; // select 구문에 결과 값을 받기 위해
 
@@ -18,7 +19,7 @@ public class EmployeeDao {
 	private String user = "hr";
 	private String password = "hr";
 
-	public EmployeeDao() { // 생성될때 드라이버로드 와 연결해준다.
+	public DAO() { // 생성될때 드라이버로드 와 연결해준다.
 		try {
 			Class.forName(driver);
 			conn = DriverManager.getConnection(url, user, password);
