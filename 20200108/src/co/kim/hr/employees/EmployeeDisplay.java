@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class EmployeeDisplay {
 //	List<EmployeeDto> list;
@@ -47,7 +48,7 @@ public class EmployeeDisplay {
 			else
 				System.out.println("입력이 실패했습니다.!!!!!!!!!");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
@@ -56,5 +57,77 @@ public class EmployeeDisplay {
 		
 		
 	}
-
+	
+	public void searchSelect() {
+		EmployeeServiceImpl emp = new EmployeeServiceImpl();
+		EmployeeDto dto = new EmployeeDto();
+		Scanner sc = new Scanner(System.in);
+		System.out.println("검색할 사용자 ID를 입력하세요.");
+		int key = sc.nextInt(); //키보드에서 입력한 id를 저장
+		try {
+			dto = emp.select(key);
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		dto.toString();
+		sc.close();
+		
+	}
+	
+	public void employeeDelete() {
+		EmployeeServiceImpl emp = new EmployeeServiceImpl();
+		EmployeeDto dto = new EmployeeDto();
+		Scanner sc = new Scanner(System.in);
+		System.out.println("삭제할 사용자 ID를 입력하세요.");
+		dto.setEmployee_id(sc.nextInt()); //키보드에서 입력한 id를 저장
+		try {
+			int n = emp.delete(dto);
+			if(n !=0)
+				System.out.println("정상적으로 삭제 됨");
+			else
+				System.out.println("삭제 되지 않았습니다.");
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		sc.close();
+		allSelectList(); //삭제 후 전체리스트를 보여준다.
+		
+		
+		
+		
+	}
+	
+	
+	public void update() {
+		EmployeeServiceImpl emp = new EmployeeServiceImpl();
+		EmployeeDto dto = new EmployeeDto();
+		Scanner sc = new Scanner(System.in);
+		System.out.println("검색할 사용자 ID를 입력하세요.");
+		int key = sc.nextInt();
+		try {
+			dto = emp.select(key);
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dto.toString();
+		sc.nextLine();
+		System.out.println("변경할 First Name을 입력하세요.");
+		dto.setFirst_name(sc.nextLine());
+		try {
+			int n = emp.update(dto);
+			if(n!=0) 
+				System.out.println("정상적으로 변경");
+			else 
+				System.out.println("변경 실패");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		sc.close();
+		allSelectList();
+		
+	}
+	
 }
