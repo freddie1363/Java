@@ -4,17 +4,32 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InterfaceServiceImpl implements InterfaceService {
 	public PreparedStatement psmt;
 	public ResultSet rs;
 	private String SELECT = "select * from countries where country_id = ?";
+	private String ALL_SELECT = "select * from countries";
 
 	@Override
 	public List<?> allSelect() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		CountryDao dao = new CountryDao();
+		CountryDto dto;
+		List<CountryDto> list = new ArrayList<CountryDto>();
+		psmt = dao.conn.prepareStatement(ALL_SELECT);
+		rs = psmt.executeQuery();
+		while(rs.next()) {
+			dto = new CountryDto();
+			dto.setCountry_id(rs.getString("country_id"));
+			dto.setCountry_name(rs.getString("country_name"));
+			dto.setRegion_id(rs.getInt("region_id"));
+			list.add(dto);
+			
+		}	
+		return list;
+		
 	}
 
 	@Override
