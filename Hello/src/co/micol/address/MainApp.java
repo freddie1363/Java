@@ -5,14 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.micol.address.model.Person;
+import co.micol.address.view.BirthdayStatisticsController;
+import co.micol.address.view.PersonEditDialogController;
 import co.micol.address.view.PersonOverviewController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -38,6 +42,10 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("AddressApp");
+        
+        
+        // 애플리케이션 아이콘을 설정한다.
+        this.primaryStage.getIcons().add(new Image("file:resources/images/address_book_32.png"));
 
         initRootLayout();
 
@@ -100,6 +108,74 @@ public class MainApp extends Application {
     public ObservableList<Person> getPersonData() {
         return personData;
     }
+    
+    
+    /**
+     * person의 자세한 정보를 변경하기 위해 다이얼로그를 연다.
+     * 만일 사용자가 OK를 클릭하면 주어진 person에 내용을 저장한 후 true를 반환한다.
+     *
+     * @param person the person object to be edited
+     * @return true if the user clicked OK, false otherwise.
+     */
+    public boolean showPersonEditDialog(Person person) {
+        try {
+            // fxml 파일을 로드하고 나서 새로운 스테이지를 만든다.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("view/PersonEditDialog.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // 다이얼로그 스테이지를 만든다.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Person");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // person을 컨트롤러에 설정한다.
+            PersonEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setPerson(person);
+
+            // 다이얼로그를 보여주고 사용자가 닫을 때까지 기다린다.
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+    
+    /**
+     * 생일 통계를 보여주기 위해 다이얼로그를 연다.
+     */
+    public void showBirthdayStatistics() {
+        try {
+            // FXML 파일을 불러와서 팝업의 새로운 Stage를 만든다.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("view/BirthdayStatistics.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Birthday Statistics");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // 연락처를 컨트롤러에 설정한다.
+            BirthdayStatisticsController controller = loader.getController();
+            controller.setPersonData(personData);
+
+            dialogStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
 
 	
 }
